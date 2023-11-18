@@ -1,9 +1,10 @@
-#include "testScanner.h"
 #include <iostream> 
 #include <iomanip>
 #include <fstream> 
 #include "token.h"
-#include "scanner.h" 
+#include "scanner.h"
+#include "testTree.h" 
+#include "parser.h"  
 
 using namespace std; 
 
@@ -33,8 +34,11 @@ int main(int argc, char *argv[]) {
 		} 
 	} 
 
-	// Pass file to testScanner
-	testScanner(*input_stream); 
+	// Parser:
+	node *root = parser(*input_stream); 
+	traversePreorder(root, 0); 
+	
+	
 	if (inFile.is_open()) { 
 		inFile.close(); 
 	} 

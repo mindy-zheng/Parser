@@ -58,7 +58,7 @@ void lookahead_ch(istream &FILE) {
 	next_ch = filter(FILE); 
 } 
 
-Token token; 
+Token new_token; 
 
 Token scanner(istream &FILE) { 
 	states curr_state = s1; // initial state 
@@ -93,21 +93,21 @@ Token scanner(istream &FILE) {
 
 		// Final state 
 		if (next_state == FINAL) { 
-			token.tokenType = static_cast<tokenID>(curr_state + max_keywords);
-			token.tokenInstance = instance; 
-			token.lineNumber = lineNum;
+			new_token.tokenType = static_cast<tokenID>(curr_state + max_keywords);
+			new_token.tokenInstance = instance; 
+			new_token.lineNumber = lineNum;
 
 			//cout << "Token Instance: " << instance << ", Token ID: " << token.tokenType << endl;
 			
 			if (curr_state == s2) { 
 				for (int i = 0; i < max_keywords; i++) { 
-					if (keywords[i] == token.tokenInstance) { 
-						token.tokenType = static_cast<tokenID>(i); 
+					if (keywords[i] == new_token.tokenInstance) { 
+						new_token.tokenType = static_cast<tokenID>(i); 
 						break;
 					}
 				}
 			}
-			return token; 
+			return new_token; 
 		} else { 
 			if (next_ch.FSAColumn != WS) { 
 				instance += next_ch.value;
@@ -118,15 +118,15 @@ Token scanner(istream &FILE) {
 		
 			if (instance.length() == max_length) { 
 				//token.tokenType = static_cast<tokenID>(curr_state);
-				token.tokenType = static_cast<tokenID>(curr_state + max_keywords);
-				token.tokenInstance = instance; 
-				token.lineNumber = next_ch.lineNum; 
-				return token; 
+				new_token.tokenType = static_cast<tokenID>(curr_state + max_keywords);
+				new_token.tokenInstance = instance; 
+				new_token.lineNumber = next_ch.lineNum; 
+				return new_token; 
 			} 
 		}
 	}
 	
-	return token;
+	return new_token;
 
 }
 

@@ -6,8 +6,6 @@
 
 using namespace std; 
 
-Token tk1;
-Token tk2; 
 
 string label_names[] = {
         "PROGRAM", "VARS", "VARLIST", "EXP", "M", "N", "R", "STATS", "MSTAT", "STAT", "BLOCK", "IN", "OUT", "IF", "LOOP", "ASSIGN", "RO",
@@ -25,8 +23,8 @@ node* createNode(node_t label) {
 	node* new_node = new node;
 	new_node -> label = label; 
 	
-	tk1 = {EMPTY_TOKEN, "", 0}; 
-	tk2 = {EMPTY_TOKEN, "", 0}; 
+	Token tk1 = {EMPTY_TOKEN, "", 0}; 
+	Token tk2 = {EMPTY_TOKEN, "", 0}; 
 	new_node -> token1 = tk1; 
 	new_node -> token2 = tk2; 
 
@@ -58,7 +56,7 @@ void visitNode(node *n, int depth) {
 	// if token 1 is not empty, print: 
 	if (n-> token1.tokenType != EMPTY_TOKEN) { 
 		cout << "Token 1: " << endl; 
-		cout << "Type: " << token_names[n->token1.tokenType] << endl; 
+		cout << "Type: " << token_types[n->token1.tokenType] << endl; 
 		cout << "Name: " << n -> token1.tokenInstance << endl; 
 		cout << "Line number: " << n-> token1.lineNumber << endl;
 	}
@@ -66,7 +64,7 @@ void visitNode(node *n, int depth) {
 	// if token 2 is not empty, print: 
 	if (n-> token2.tokenType != EMPTY_TOKEN) {
                 cout << "Token 2: " << endl;
-                cout << "Type: " << token_names[n->token2.tokenType] << endl;
+                cout << "Type: " << token_types[n->token2.tokenType] << endl;
                 cout << "Name: " << n -> token2.tokenInstance << endl;
                 cout << "Line number: " << n-> token2.lineNumber << endl;
 	}

@@ -5,7 +5,6 @@
 #include <string>
 #include <fstream>
 #include "token.h"
-#include "scanner.h"
 
 using namespace std; 
 

@@ -4,7 +4,7 @@ CPP_FLAGS = -std=c++11 -Wall
 
 TARGET = P2 
 
-CPP_FILES = main.cpp scanner.cpp testScanner.cpp
+CPP_FILES = main.cpp scanner.cpp parser.cpp testTree.cpp
 
 OBJ = $(CPP_FILES:.cpp=.o) 
 

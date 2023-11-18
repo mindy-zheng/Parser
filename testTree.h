@@ -2,11 +2,8 @@
 #define TESTTREE_H
 #include "token.h" 
 
-using namespace std; 
 
-void visitNode(node *n, int depth);
-void createNode(node_t);  
-void traversePreorder(node *n, int depth); 
+using namespace std; 
 
 enum node_t { 
 	program_node, 
@@ -38,6 +35,10 @@ typedef struct node {
         struct node *c4;
 } node; 
 
-node *createNode(node_t); 
+extern string token_types[]; 
+node *createNode(node_t);
+void visitNode(node *n, int depth);
+//void createNode(node_t);
+void traversePreorder(node *n, int depth); 
 
 #endif
