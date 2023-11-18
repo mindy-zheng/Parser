@@ -1,28 +1,30 @@
-CS4280 Programming Translation Project -- P1:
+CS4280 Programming Translation Project -- P2:
+- Cloned all source files and fixed errors from P1. 
 
-Resubmission: 
-This is a re-do of P1 with the correct FSA interpretation of the lexical definitions provided. It should work as expected.  
-
-I have choosen option 2: Tokens dont have to be separated by white spaces except when needed to prevent incorrect tokes (this will need FSA implementation or something similar)
-Eg. 5+x doesnt need white spaces to figure this is integer followed by operator followed by ID
-x y which is ID followed by ID must have the white space or otherwise it would be just one ID
-Sources: 
-1. This helped me in visualizing and creating my FSA table:  
-	https://hackernoon.com/lexical-analysis-861b8bfe4cb0
-2. This helped organized my tokenID's into key-value pairs: 
-	https://www.geeksforgeeks.org/unordered_map-in-cpp-stl/
+P2 BNF: 
+<program>  ->     <vars> xopen <stats> xclose
+<vars>     ->      empty | xdata <varList>
+<varList>  ->      identifier : integer ; | identifier : integer <varList>
+<exp>      ->      <M> / <exp> | <M> * <exp> | <M>
+<M>        ->      <N> + <M> | <N>      
+<N>        ->     <R> - <N> | ~ <N> |  <R>
+<R>        ->      ( <exp> )  | identifier | integer
+<stats>    ->      <stat>  <mStat>
+<mStat>    ->      empty |  <stat>  <mStat>
+<stat>     ->      <in>   | <out>   | <block> | <if>  | <loop>  | <assign>
+<block>    ->      { <vars> <stats> }
+<in>       ->      xin >> identifier ;
+<out>      ->      xout << <exp> ;
+<if>       ->      xcond [ <exp> <RO> <exp> ] <stat>
+<loop>     ->      xloop [ <exp> <RO> <exp> ]  <stat>
+<assign>   ->     xlet  identifier  <exp> ;
+<RO>       ->      << (one token)  | >>  (one token)  | < | > | = | %                     
 
 
 HOW TO RUN: 
-1. run and compile P1 with: make 
+1. run and compile P2 with: make 
 
-Option 1: Enter: ./P1 test1.f23 
-	- or any testing file you'd like to use.
-	- I created all testing files provided
-	- Similar to P0, .f23 will be append if not provided by user 
-Option 2: Enter: ./P1 
-	- It will make a new line for you to enter input: 
-	- example input: x xy xaw
+Option 1:  
+Option 2: 
 
-I have 6 files: token.h, scanner.h, scanner.c, testScanner.c, testScanner.h, and main.c
 

@@ -2,7 +2,7 @@ CPP = g++
 
 CPP_FLAGS = -std=c++11 -Wall
 
-TARGET = P1 
+TARGET = P2 
 
 CPP_FILES = main.cpp scanner.cpp testScanner.cpp
 
