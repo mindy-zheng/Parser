@@ -6,7 +6,8 @@
 #include <string> 
 
 using namespace std;
-const char* token_types[] = {
+
+string token_types[] = {
 	"XOPEN - KEYWORD",
 	"XCLOSE - KEYWORD",
 	"XLOOP - KEYWORD",
@@ -24,8 +25,6 @@ const char* token_types[] = {
 	"INTEGER",
 	
 	"EQUAL - OP",
-    //"GREATERGREATER",
-    //"LESSLESS",
         "LESS - OP",
     	"GREATER - OP",
     	"TILDE - OP",

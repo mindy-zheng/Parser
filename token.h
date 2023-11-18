@@ -57,9 +57,6 @@ enum tokenID {
 
 
 
-
-
-
 typedef struct Token { 
 	tokenID tokenType; 
 	string tokenInstance; 
