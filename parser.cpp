@@ -52,8 +52,10 @@ node *program(istream &file) {
 			token = scanner(file); 
 			return n; 
 		}
+		cout << "<program>" << endl;
 		error(); 
-	}	
+	}
+	cout << "<program>" << endl; 	
 	error(); 
 	return NULL; 	 
 } 

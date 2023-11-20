@@ -51,7 +51,7 @@ void traversePreorder(node *n, int depth) {
 
 // Visits a node in the parse tree, prints label, indentation, and tokens associated w/ it
 void visitNode(node *n, int depth) { 
-	cout << string(depth * 2, ' ') << "Node: " << label_names[n-> label]; 
+	cout << string(depth * 2, '-') << "Node: " << label_names[n-> label]; 
 	
 	// if token 1 is not empty, print:
 	if (n->token1.tokenType != EMPTY_TOKEN) {
