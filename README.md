@@ -21,7 +21,7 @@ P2 BNF:
 <assign>   ->     xlet  identifier  <exp> ;
 <RO>       ->      << (one token)  | >>  (one token)  | < | > | = | %                     
 ## Testing
-For better organization, I kept my testing files in a separate folder. There will be 10 testing files for bad and good programs, so you'll have to include this when caling upon the program. 
+For better organization, I kept my testing files in a separate folder. There will be 10 testing files for bad and good programs, so you'll have to include this when caling upon the program. Please note that some of the testing files are out of order (in the bad_test directory). Reach out if this should be fixed.  
 
 ## HOW TO RUN: 
 1. Compile P2 with: make 
