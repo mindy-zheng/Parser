@@ -1,5 +1,6 @@
-CS4280 Programming Translation Project -- P2:
-- Cloned all source files and fixed errors from P1. 
+# CS4280 Programming Translation Project -- P2:
+- Cloned all source files and fixed errors from P1 involving whitespace detection and incorrect token matching. 
+- This program implements a parser for a given LL(1) grammar. This parser builds from the scanner module in P1 to tokenize all the input and constructs a parse tree based on the BNF grammar below. 
 
 P2 BNF: 
 <program>  ->     <vars> xopen <stats> xclose
@@ -19,12 +20,15 @@ P2 BNF:
 <loop>     ->      xloop [ <exp> <RO> <exp> ]  <stat>
 <assign>   ->     xlet  identifier  <exp> ;
 <RO>       ->      << (one token)  | >>  (one token)  | < | > | = | %                     
+## Testing
+For better organization, I kept my testing files in a separate folder. There will be 10 testing files for bad and good programs, so you'll have to include this when caling upon the program. 
 
-
-HOW TO RUN: 
-1. run and compile P2 with: make 
-
-Option 1:  
-Option 2: 
-
+## HOW TO RUN: 
+1. Compile P2 with: make 
+2. To test out the good inputs, please make sure to include the directory:
+	- Option 1: ./P2 good_test/[testingfile.f23] 
+	- Option 2: ./P2 good_test/[testingfile] 
+3. To test out the bad inputs, do the same as above: 
+	- Option 1: ./P2 bad_test/[testingfile.f23] 
+	- Option 2: ./P2 bad_test/[testingfile]
 
