@@ -25,23 +25,22 @@ XOPEN_TOKEN, XCLOSE_TOKEN, XLOOP_TOKEN, XDATA_TOKEN, XEXIT_TOKEN, XIN_TOKEN, XOU
 node* parser(istream &file) { 
 	node *root;
 
-	cout << "Starting parser" << endl;  
+	cout << "Beginning parser" << endl;  
 
 	lookahead_ch(file); 
 	token = scanner(file); 
 	root = program(file);
 	
 
-	if (token.tokenType != EOF) { 
+	if (token.tokenType != EOF_TOKEN) { 
 		cout << "Parser error: extra token after EOF" << endl; 
 	} 
-	cout << "Parser success! " << endl; 
 	return root; 
 } 
 
 // <program>  -> <vars> xopen <stats> xclose
 node *program(istream &file) { 
-	cout << "Entering program function" << endl;
+	//cout << "Entering program function" << endl;
 	node *n = createNode(program_node);
 	n-> c1 = vars(file); 
 	if (token.tokenInstance == "xopen") {
@@ -99,7 +98,8 @@ node *varList(istream &file) {
 		}
 	}
 	cout << "From <varList>" << endl; 
-	error(); 	
+	error(); 
+	return NULL;	
 } 
 
 // <exp> -> <M> / <exp> | <M> * <exp> | <M>
