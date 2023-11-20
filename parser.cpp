@@ -45,25 +45,23 @@ node *program(istream &file) {
 	n-> c1 = vars(file); 
 	if (token.tokenInstance == "xopen") {
 		token = scanner(file); 
-		//n -> c1 = vars(file);
 		n -> c2 = stats(file);
 		
 		//token = scanner(file); 
 		if (token.tokenInstance == "xclose") { 
 			token = scanner(file); 
 			return n; 
-		} 
+		}
 		error(); 
-	}
-	cout << "From <block>" << endl; 
+	}	
 	error(); 
 	return NULL; 	 
 } 
 	
 // <vars> -> empty | xdata <varList> 
 node *vars(istream &file) { 
-	if (token.tokenType == XDATA_TOKEN) {
-		node *n = createNode(program_node); 
+	if (token.tokenInstance == "xdata") {
+		node *n = createNode(vars_node); 
 		token = scanner(file); 
 		n -> c1 = varList(file); 
 		return n; 
@@ -88,7 +86,6 @@ node *varList(istream &file) {
 
 				if (token.tokenType == SEMICOLON_TOKEN) { 
 					token = scanner(file); 
-					n -> c1 = varList(file); 
 					return n; 
 				} else { 
 					n-> c1 = varList(file); 
@@ -97,7 +94,7 @@ node *varList(istream &file) {
 			}
 		}
 	}
-	cout << "From <varList>" << endl; 
+	cout << "<varList>" << endl; 
 	error(); 
 	return NULL;	
 } 
@@ -183,7 +180,7 @@ node *R(istream &file) {
 		n -> token1 = token; 
 		token = scanner(file); 
 	} else { 
-		cout << "From <R>" << endl; 
+		cout << "<R>" << endl;
 		error(); 
 	} return n;  
 } 
@@ -234,7 +231,7 @@ node *stat(istream &file) {
 		n -> c1 = assign(file); 
 		return n;
 	} 
-	cout << "From <stat>" << endl; 
+	cout << "<stat>" << endl;	
 	error();  
 	return NULL; 
 } 
@@ -253,9 +250,10 @@ node *block(istream &file) {
 			token = scanner(file); 
 			return n; 
 		}
+		cout << "<block>" << endl;
 		error(); 
 	} 
-	cout << "From <block>" << endl; 
+	cout << "<block>" << endl;
 	error(); 
 	return NULL;
 } 
@@ -282,7 +280,8 @@ node *in(istream &file) {
 			}
 		}
 	}
-	cout << "From <in> " << endl; 
+	cout << "<in>" << endl;
+	error(); 
 	return NULL;
 } 
 
@@ -303,7 +302,7 @@ node *out(istream &file) {
 			} 
 		}
 	} 
-	cout << "From out" << endl; 
+	cout << "<out>" << endl;
 	error(); 
 	return NULL; 
 }
@@ -328,7 +327,7 @@ node *If(istream &file) {
 			} 
 		}
 	}
-	cout << "From <if>" << endl; 
+	cout << "<if>" << endl;
 	error(); 
 	return NULL; 
 } 
@@ -353,7 +352,7 @@ node *loop(istream &file) {
                         }
 		}
         }
-        cout << "From <loop>" << endl;
+	cout << "<loop>" << endl;
 	error(); 
         return NULL;
 }
@@ -378,13 +377,13 @@ node *assign(istream &file) {
 			}
 		}
 	}
-	cout << "Error within <assign>" << endl; 
+	cout << "<assign>" << endl;
 	error(); 
 	return NULL; 	
 }
 // <RO> -> <<(one token) | >> (one token) | < | > | = | %
 node *RO(istream &file) { 
-	node *n = createNode(RO_node); 
+	node *n = createNode(RO_node);
 	if (token.tokenInstance == "<<") { 
 		n-> token1 = token; 
 		token = scanner(file); 
@@ -410,12 +409,12 @@ node *RO(istream &file) {
                 token = scanner(file);
                 return n;
 	} 
-	cout << "<RO>" << endl; 
+	cout << "<RO>" << endl;
 	error(); 
 	return NULL;
 }
 
 void error() {
-   cout << "Parser Error: Unexpected token - " << token_types[token.tokenType] << endl; 
+   cout << "ERROR: Unexpected token - " << token_types[token.tokenType] << endl; 
    exit(token.tokenType);
 }
