@@ -1,5 +1,6 @@
 #include "token.h" 
 #include "scanner.h"
+#include "testTree.h" 
 #include <iostream>
 #include <fstream> 
 #include <stdlib.h> 
@@ -20,9 +21,9 @@ int lineNum = 1;
 character next_ch; 
 character filter(istream &FILE) { 
 	character input; 
-	char ch = FILE.get(); 
+	char ch = FILE.get();
+ 
 	int col = getFSAColumn(ch);
-	
 	//DEBUG: cout << "Current ch: " << ch << ", FSA Column: " << col << endl;
 
 	while (col == COMMENT) { 
@@ -80,11 +81,11 @@ Token scanner(istream &FILE) {
 		// Multi-characters like: >> << 
 		if (curr_state == 5 && next_ch.value == '>') {
             		next_ch = filter(FILE); // Move to the next character after '>'
-            		instance = "<<"; 
+            		instance = ">>"; 
             		next_state = FINAL; // Set the next state to the final state
         	}
 
-		if (curr_state == 6 && next_ch.value == '<') {
+		if (curr_state == 4 && next_ch.value == '<') {
             		next_ch = filter(FILE); // Move to the next character after '>'
             		instance = "<<"; 
             		next_state = FINAL; // Set the next state to the final state

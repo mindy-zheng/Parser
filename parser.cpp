@@ -6,10 +6,11 @@
 #include "scanner.h"
 #include "token.h" 
 #include "testTree.h"
+#include "testScanner.h"
 
 using namespace std; 
 
-Token token;
+static Token token;
 /*
  *  program_node, vars_node, varList_node, exp_node, M_node, N_node, R_node, stats_node, mStat_node, stat_node, block_node, in_node, out_node, if_node, loop_node, assign_node,RO_node,
 
@@ -19,14 +20,17 @@ XOPEN_TOKEN, XCLOSE_TOKEN, XLOOP_TOKEN, XDATA_TOKEN, XEXIT_TOKEN, XIN_TOKEN, XOU
 
  */ 
 
-//extern string token_types[]; 
+//extern string token_types[];
 
 node* parser(istream &file) { 
-	node *root; 
+	node *root;
+
+	cout << "Starting parser" << endl;  
 
 	lookahead_ch(file); 
 	token = scanner(file); 
 	root = program(file);
+	
 
 	if (token.tokenType != EOF) { 
 		cout << "Parser error: extra token after EOF" << endl; 
@@ -37,39 +41,42 @@ node* parser(istream &file) {
 
 // <program>  -> <vars> xopen <stats> xclose
 node *program(istream &file) { 
+	cout << "Entering program function" << endl;
 	node *n = createNode(program_node);
-	
-	n -> c1 = vars(file); 
-	if (token.tokenType == XOPEN_TOKEN) {
+	n-> c1 = vars(file); 
+	if (token.tokenInstance == "xopen") {
 		token = scanner(file); 
+		//n -> c1 = vars(file);
 		n -> c2 = stats(file);
-		if (token.tokenType == XCLOSE_TOKEN) { 
+		
+		//token = scanner(file); 
+		if (token.tokenInstance == "xclose") { 
 			token = scanner(file); 
 			return n; 
-		} else { 
-			cout << "Error: Expected 'xclose' terminal." << endl;  
-			exit(1); 
-		}
-	} else { 
-		cout << "Error: expected 'xopen' terminal" << endl; 
-		exit(1);
-	} 
+		} 
+		error(); 
+	}
+	cout << "From <block>" << endl; 
+	error(); 
+	return NULL; 	 
 } 
 	
 // <vars> -> empty | xdata <varList> 
 node *vars(istream &file) { 
-	node *n = createNode(vars_node); 
-	if (token.tokenType == XDATA_TOKEN) { 
+	if (token.tokenType == XDATA_TOKEN) {
+		node *n = createNode(program_node); 
 		token = scanner(file); 
 		n -> c1 = varList(file); 
-	} 
-	return n; 
+		return n; 
+	} else { 
+		return NULL; // empty 
+	}
 } 
 
 // <varList> -> identifier : integer ; | identifier : integer <varList> 
 node *varList(istream &file) { 
-	node *n = createNode(varList_node); 
-	if (token.tokenType == IDENTIFIER_TOKEN) { 
+	if (token.tokenType == IDENTIFIER_TOKEN) {
+		node *n = createNode(varList_node); 
 		n-> token1 = token; 
 		token = scanner(file); 
 
@@ -83,12 +90,16 @@ node *varList(istream &file) {
 				if (token.tokenType == SEMICOLON_TOKEN) { 
 					token = scanner(file); 
 					n -> c1 = varList(file); 
+					return n; 
+				} else { 
+					n-> c1 = varList(file); 
+					return n; 
 				}
 			}
 		}
 	}
-	
-	return n; 
+	cout << "From <varList>" << endl; 
+	error(); 	
 } 
 
 // <exp> -> <M> / <exp> | <M> * <exp> | <M>
@@ -100,10 +111,12 @@ node *exp(istream &file) {
 		n -> token1 = token; 
 		token = scanner(file); 
 		n -> c2 = exp(file); 
+		return n; 
 	} else if (token.tokenType == MULTIPLY_TOKEN) { 
 		n -> token1 = token; 
 		token = scanner(file); 
-		n -> c2 = exp(file); 
+		n -> c2 = exp(file);
+		return n;  
 	} 
 	return n; 
 }
@@ -131,6 +144,7 @@ node *N(istream &file) {
 		n-> token1 = token; 
 		token = scanner(file);
 		n -> c1 = N(file);  
+		return n; 
 	} else { 
 		n-> c1 = R(file); 
 	
@@ -138,35 +152,40 @@ node *N(istream &file) {
 			n-> token1 = token; 
 			token = scanner(file); 
 			n-> c2 = N(file); 
-		}
+			return n; 
+		} else { 
+			return n; 
+		} 
 	}
-	
-	return n; 
+
+	return NULL; 
 } 
 
 
 // <R> -> (<exp>) | identifier | integer
 node *R(istream &file) { 
-	node *n = createNode(R_node); 
-	if (token.tokenType == LEFT_PARENTHESIS_TOKEN) { 
+	node *n = createNode(R_node);
+	 
+	if (token.tokenInstance == "(") { 
 		token = scanner(file); 
 		n-> c1 = exp(file); 
 
-		if (token.tokenType == RIGHT_PARENTHESIS_TOKEN) { 
-			token = scanner(file); 
-		} else { 
-			cout << "Error: Expected ')' token" << endl; 
-			exit(1); 
-		} 
-	} else if (token.tokenType == IDENTIFIER_TOKEN || token.tokenType == INTEGER_TOKEN){ 
+		if (token.tokenInstance == ")") { 
+			token = scanner(file);
+		}
+	} 
+	 
+	else if (token.tokenType == IDENTIFIER_TOKEN){ 
+		n -> token1 = token; 
+		token = scanner(file); 
+	} 
+	else if (token.tokenType == INTEGER_TOKEN) { 
 		n -> token1 = token; 
 		token = scanner(file); 
 	} else { 
-		cout << "Error: expected identifier or integer constant" << endl; 
-		exit(1); 
-	}
-	
-	return n; 
+		cout << "From <R>" << endl; 
+		error(); 
+	} return n;  
 } 
 
 
@@ -185,7 +204,8 @@ node *mStat(istream &file) {
 	// check if current token can start a <stat> 
 	if (token.tokenType == XIN_TOKEN || token.tokenType == XOUT_TOKEN || token.tokenType == LEFT_BRACE_TOKEN || token.tokenType == XCOND_TOKEN || token.tokenType == XLOOP_TOKEN || token.tokenType == XLET_TOKEN) {
 		n -> c1 = stat(file); 
-		n -> c2 = mStat(file); 
+		n -> c2 = mStat(file);
+		return n;
 	} 
 
 	return n; 
@@ -193,24 +213,30 @@ node *mStat(istream &file) {
 }
 // <stat> -> <in>|<out>|<block>|<if>|<loop>|<assign>
 node *stat(istream &file) { 
-	node *n = createNode(stat_node); 
+	node *n = createNode(stat_node);
+	 
 	if (token.tokenType == XIN_TOKEN) { 
 		n -> c1 = in(file);
+		return n;
 	} else if (token.tokenType == XOUT_TOKEN) { 
 		n-> c1 = out(file); 
+		return n;
 	} else if (token.tokenType == LEFT_BRACE_TOKEN) { 
 		n -> c1 = block(file); 
+		return n;
 	} else if (token.tokenType == XCOND_TOKEN) { 
 		n -> c1 = If(file); 
+		return n;
 	} else if (token.tokenType == XLOOP_TOKEN) { 
 		n -> c1 = loop(file); 
+		return n; 
 	} else if (token.tokenType == XLET_TOKEN) { 
 		n -> c1 = assign(file); 
-	} else { 
-		cout << "Error within <stat>" << endl; 
-		error(); 
+		return n;
 	} 
-	return n; 
+	cout << "From <stat>" << endl; 
+	error();  
+	return NULL; 
 } 
 
 
@@ -227,9 +253,10 @@ node *block(istream &file) {
 			token = scanner(file); 
 			return n; 
 		}
-		cout << "Error" << endl; 
+		error(); 
 	} 
 	cout << "From <block>" << endl; 
+	error(); 
 	return NULL;
 } 
 	
@@ -241,7 +268,7 @@ node *in(istream &file) {
 	if (token.tokenType == XIN_TOKEN) { 	
 		token = scanner(file); 
 	
-		if (token.tokenType == GREATERGREATER_TOKEN) { 
+		if (token.tokenInstance == ">>") { 
 			token = scanner(file); 
 		
 			if (token.tokenType == IDENTIFIER_TOKEN) { 
@@ -266,7 +293,7 @@ node *out(istream &file) {
 	if (token.tokenType == XOUT_TOKEN) { 
 		token = scanner(file); 
 
-		if (token.tokenType == LESSLESS_TOKEN) { 
+		if (token.tokenInstance == "<<") { 
 			token = scanner(file); 
 			n -> c1 = exp(file); 
 		
@@ -277,6 +304,7 @@ node *out(istream &file) {
 		}
 	} 
 	cout << "From out" << endl; 
+	error(); 
 	return NULL; 
 }
 
@@ -301,6 +329,7 @@ node *If(istream &file) {
 		}
 	}
 	cout << "From <if>" << endl; 
+	error(); 
 	return NULL; 
 } 
 
@@ -325,6 +354,7 @@ node *loop(istream &file) {
 		}
         }
         cout << "From <loop>" << endl;
+	error(); 
         return NULL;
 }
 
@@ -341,6 +371,7 @@ node *assign(istream &file) {
 			n -> token2 = token; 
 			token = scanner(file); 
 			n -> c1 = exp(file); 
+		
 			if (token.tokenType == SEMICOLON_TOKEN) { 
 				token = scanner(file); 
 				return n; 
@@ -348,16 +379,17 @@ node *assign(istream &file) {
 		}
 	}
 	cout << "Error within <assign>" << endl; 
+	error(); 
 	return NULL; 	
 }
 // <RO> -> <<(one token) | >> (one token) | < | > | = | %
 node *RO(istream &file) { 
 	node *n = createNode(RO_node); 
-	if (token.tokenType == LESSLESS_TOKEN) { 
+	if (token.tokenInstance == "<<") { 
 		n-> token1 = token; 
 		token = scanner(file); 
 		return n; 
-	} else if (token.tokenType == GREATERGREATER_TOKEN) { 
+	} else if (token.tokenInstance == ">>") { 
 		n-> token1 = token;
                 token = scanner(file);
                 return n;
@@ -379,6 +411,7 @@ node *RO(istream &file) {
                 return n;
 	} 
 	cout << "<RO>" << endl; 
+	error(); 
 	return NULL;
 }
 

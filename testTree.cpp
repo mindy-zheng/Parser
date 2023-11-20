@@ -51,23 +51,18 @@ void traversePreorder(node *n, int depth) {
 
 // Visits a node in the parse tree, prints label, indentation, and tokens associated w/ it
 void visitNode(node *n, int depth) { 
-	cout << string(depth * 2, ' ') << "Node Type: " << label_names[n-> label] << endl; 
+	cout << string(depth * 2, ' ') << "Node: " << label_names[n-> label] << endl; 
 	
-	// if token 1 is not empty, print: 
-	if (n-> token1.tokenType != EMPTY_TOKEN) { 
-		cout << "Token 1: " << endl; 
-		cout << "Type: " << token_types[n->token1.tokenType] << endl; 
-		cout << "Name: " << n -> token1.tokenInstance << endl; 
-		cout << "Line number: " << n-> token1.lineNumber << endl;
-	}
+	// if token 1 is not empty, print:
+	if (n->token1.tokenType != EMPTY_TOKEN) {
+   		 cout << " {" << token_types[n->token1.tokenType] << ", " << n->token1.tokenInstance << ", " << n->token1.lineNumber << "}";
+	} 
 
 	// if token 2 is not empty, print: 
-	if (n-> token2.tokenType != EMPTY_TOKEN) {
-                cout << "Token 2: " << endl;
-                cout << "Type: " << token_types[n->token2.tokenType] << endl;
-                cout << "Name: " << n -> token2.tokenInstance << endl;
-                cout << "Line number: " << n-> token2.lineNumber << endl;
+	if (n->token2.tokenType != EMPTY_TOKEN) {
+    		cout << " {" << token_types[n->token2.tokenType] << ", " << n->token2.tokenInstance << ", " << n->token2.lineNumber << "}";
 	}
+
 
 } 
 
